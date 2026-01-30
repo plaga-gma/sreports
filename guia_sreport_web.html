@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía sReport - Staff PeladosRP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Rubik:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #131722;
+            --bg-tertiary: #1a1f2e;
+            --accent-cyan: #00d9ff;
+            --accent-purple: #a855f7;
+            --accent-orange: #ff6b35;
+            --text-primary: #e8eaed;
+            --text-secondary: #a0a5b9;
+            --text-muted: #6b7280;
+            --border-color: #2a3142;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rubik', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 217, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 107, 53, 0.03) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 280px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            left: 0;
+            top: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+
+        .logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            padding: 0 1.5rem 2rem;
+            background: linear-gradient(135deg, var(--accent-cyan) 0%, var(--accent-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-section-title {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            padding: 0 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.7rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.05);
+            border-left-color: var(--accent-cyan);
+        }
+
+        .nav-link.active {
+            color: var(--accent-cyan);
+            background: rgba(0, 217, 255, 0.08);
+            border-left-color: var(--accent-cyan);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 3rem 4rem;
+            max-width: 1200px;
+        }
+
+        /* Header */
+        .header {
+            margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 120px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+        }
+
+        h1 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 2rem;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--accent-cyan);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        /* Info Cards */
+        .info-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+        }
+
+        .info-card.warning {
+            border-color: var(--warning);
+        }
+
+        .info-card.warning::before {
+            background: var(--warning);
+        }
+
+        .info-card.success {
+            border-color: var(--success);
+        }
+
+        .info-card.success::before {
+            background: var(--success);
+        }
+
+        .info-card h4 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        /* Command Blocks */
+        .command-block {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-cyan);
+            position: relative;
+            overflow-x: auto;
+        }
+
+        .command-block::before {
+            content: '>';
+            position: absolute;
+            left: 0.5rem;
+            color: var(--accent-purple);
+            font-weight: 700;
+        }
+
+        .command-block code {
+            padding-left: 1.5rem;
+            display: block;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin: 1rem 0 1.5rem 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+            padding-left: 0.5rem;
+        }
+
+        li::marker {
+            color: var(--accent-cyan);
+        }
+
+        /* Key bindings */
+        .keybind {
+            display: inline-block;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.25rem 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            margin: 0 0.25rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--bg-tertiary);
+        }
+
+        th {
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            color: var(--accent-cyan);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(0, 217, 255, 0.03);
+        }
+
+        /* Scroll to top button */
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 217, 255, 0.3);
+            z-index: 1000;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 217, 255, 0.4);
+        }
+
+        /* Mobile Menu Toggle */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            cursor: pointer;
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                z-index: 1000;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 5rem 2rem 3rem;
+            }
+
+            h1 {
+                font-size: 2.25rem;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 5rem 1.5rem 2rem;
+            }
+
+            h1 {
+                font-size: 1.875rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .command-block {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Custom scrollbar for main content */
+        .main-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        .main-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+
+        /* Highlight effect */
+        .highlight {
+            background: linear-gradient(90deg, transparent, rgba(0, 217, 255, 0.1), transparent);
+            padding: 0 0.25rem;
+            border-radius: 3px;
+        }
+
+        /* Badge */
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 217, 255, 0.1);
+            color: var(--accent-cyan);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+        }
+
+        .badge.new {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge.important {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    
+    <div class="container">
+        <nav class="sidebar" id="sidebar">
+            <div class="logo">sReport Guide</div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Introducción</div>
+                <a href="#intro" class="nav-link">¿Qué es sReport?</a>
+                <a href="#funcionamiento" class="nav-link">Cómo funciona</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Comandos</div>
+                <a href="#comandos-jugadores" class="nav-link">Para jugadores</a>
+                <a href="#comandos-admin" class="nav-link">Para administradores</a>
+                <a href="#comandos-consola" class="nav-link">Comandos de consola</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Flujo de trabajo</div>
+                <a href="#flujo-reportes" class="nav-link">Recibir reportes</a>
+                <a href="#sits" class="nav-link">Sistema de sits</a>
+                <a href="#popups" class="nav-link">Popups y notificaciones</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Funcionalidades</div>
+                <a href="#menu-admin" class="nav-link">Menú administrativo</a>
+                <a href="#gestion-sits" class="nav-link">Gestión de sits</a>
+                <a href="#teletransportacion" class="nav-link">Teletransportación</a>
+                <a href="#integracion" class="nav-link">Integración admin mods</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Configuración</div>
+                <a href="#permisos" class="nav-link">Sistema de permisos</a>
+                <a href="#hotkeys" class="nav-link">Teclas rápidas</a>
+                <a href="#cooldowns" class="nav-link">Enfriamientos</a>
+                <a href="#afk" class="nav-link">Sistema AFK</a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Recursos</div>
+                <a href="#estadisticas" class="nav-link">Estadísticas</a>
+                <a href="#situaciones" class="nav-link">Situaciones especiales</a>
+                <a href="#tips" class="nav-link">Tips y mejores prácticas</a>
+                <a href="#problemas" class="nav-link">Solución de problemas</a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="header">
+                <h1>Guía de sReport</h1>
+                <p class="subtitle">Sistema de reportes y sesiones administrativas para PeladosRP</p>
+            </div>
+
+            <section id="intro" class="section">
+                <h2>¿Qué es sReport?</h2>
+                <p>sReport es un addon premium que revoluciona la forma en que el staff maneja la moderación del servidor. En lugar de depender de múltiples addons separados, sReport integra todo en un sistema cohesivo que se comunica con ULX (o cualquier otro sistema de administración).</p>
+                
+                <div class="info-card">
+                    <h4>Tres funcionalidades esenciales <span class="badge">Todo en uno</span></h4>
+                    <ul>
+                        <li><strong>Sistema de reportes:</strong> Permite a los jugadores notificar al staff sobre problemas</li>
+                        <li><strong>Sistema de sits:</strong> Organiza sesiones privadas para resolver conflictos</li>
+                        <li><strong>Notificaciones popup:</strong> Muestra alertas visuales en tiempo real cuando hay reportes activos</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="funcionamiento" class="section">
+                <h2>Cómo funciona</h2>
+                <p>El addon funciona en dos niveles complementarios que trabajan juntos para crear una experiencia de moderación fluida y eficiente.</p>
+                
+                <h3>Nivel 1: Reportes de jugadores</h3>
+                <p>Cuando un jugador hace un reporte, no necesitás estar mirando el chat ni revisando menús constantemente. El addon te muestra <span class="highlight">popups (ventanas emergentes)</span> en tu pantalla que aparecen automáticamente cuando hay un nuevo reporte.</p>
+                
+                <div class="info-card success">
+                    <h4>Información en los popups</h4>
+                    <ul>
+                        <li>Quién hizo el reporte (reportante)</li>
+                        <li>A quién está reportando (infractor)</li>
+                        <li>Razón del reporte (RDM, FailRP, NLR, RDA, Otro)</li>
+                        <li>Comentarios adicionales del jugador</li>
+                    </ul>
+                </div>
+
+                <h3>Nivel 2: Sesiones administrativas</h3>
+                <p>Los sits te permiten organizar sesiones privadas donde podés teleportar y atender a jugadores problemáticos. Durante estas sesiones tenés acceso a todas las herramientas administrativas que necesitás.</p>
+            </section>
+
+            <section id="comandos-jugadores" class="section">
+                <h2>Comandos para jugadores</h2>
+                <p>Los jugadores del servidor pueden crear reportes usando varios comandos de chat intuitivos y fáciles de recordar:</p>
+
+                <div class="command-block">
+                    <code>@ [mensaje]</code>
+                </div>
+                <p>Ejemplo: <code class="keybind">@ayuda me están matando</code> - Abre el menú de reportes directamente</p>
+
+                <div class="command-block">
+                    <code>!report</code>
+                </div>
+                <div class="command-block">
+                    <code>/report</code>
+                </div>
+                <p>Estos tres comandos hacen exactamente lo mismo: abren el menú donde el jugador puede seleccionar al infractor, elegir la razón del reporte, y escribir un comentario.</p>
+
+                <div class="info-card warning">
+                    <h4>Límites de reportes <span class="badge important">Anti-spam</span></h4>
+                    <ul>
+                        <li><strong>Límite activo:</strong> 1 reporte activo a la vez</li>
+                        <li><strong>Cooldown:</strong> 2 minutos entre reportes</li>
+                        <li><strong>Comentario mínimo:</strong> 5 caracteres</li>
+                        <li><strong>Comentario máximo:</strong> 60 caracteres</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="comandos-admin" class="section">
+                <h2>Comandos para administradores</h2>
+                <p>Como administrador, tenés acceso a comandos especiales que te dan control total sobre el sistema de moderación.</p>
+
+                <h3>Menú administrativo principal</h3>
+                <div class="command-block">
+                    <code>!reportadmin</code>
+                </div>
+                <div class="command-block">
+                    <code>/reportadmin</code>
+                </div>
+                <div class="command-block">
+                    <code>!sreport</code>
+                </div>
+                <div class="command-block">
+                    <code>/sreport</code>
+                </div>
+                <p>Abre el menú de administración principal con estadísticas completas, historial de reportes, y análisis del rendimiento del staff.</p>
+
+                <h3>Menú de reportes y sits activos</h3>
+                <div class="command-block">
+                    <code>!sreportactive</code>
+                </div>
+                <div class="command-block">
+                    <code>/sreportactive</code>
+                </div>
+                <div class="command-block">
+                    <code>!activereports</code>
+                </div>
+                <div class="command-block">
+                    <code>!activesits</code>
+                </div>
+                <p>Muestra en tiempo real qué casos están siendo atendidos y cuáles están esperando atención.</p>
+
+                <h3>Crear sits desde el chat</h3>
+                <div class="command-block">
+                    <code>!sit [jugador1] [jugador2] ...</code>
+                </div>
+                <div class="command-block">
+                    <code>/sit [jugador1] [jugador2] ...</code>
+                </div>
+                <p>Ejemplo: <code class="keybind">!sit Gonzalo Pepe</code> - Crea automáticamente un sit con vos como administrador principal y los jugadores especificados como participantes.</p>
+            </section>
+
+            <section id="comandos-consola" class="section">
+                <h2>Comandos de consola</h2>
+                <p>Además de los comandos de chat, existen comandos de consola que ofrecen funcionalidades adicionales.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Comando</th>
+                            <th>Función</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sreport_menu</code></td>
+                            <td>Abre el menú de reportes (cualquier jugador)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sreport_admin</code></td>
+                            <td>Abre el menú administrativo</td>
+                        </tr>
+                        <tr>
+                            <td><code>sreport_activemenu</code></td>
+                            <td>Muestra reportes y sits activos</td>
+                        </tr>
+                        <tr>
+                            <td><code>sreport_setsitpos</code></td>
+                            <td>Establece la posición principal de sit</td>
+                        </tr>
+                        <tr>
+                            <td><code>sreport_addsitpos</code></td>
+                            <td>Agrega posiciones adicionales de sit</td>
+                        </tr>
+                        <tr>
+                            <td><code>sreport_clearsitpos</code></td>
+                            <td>Elimina todas las posiciones de sit</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-card">
+                    <h4>Posiciones de sit <span class="badge new">Importante</span></h4>
+                    <p>Los comandos de posicionamiento también funcionan desde el chat con <code class="keybind">!</code> o <code class="keybind">/</code> al principio. Las posiciones se guardan por mapa, así que necesitás configurarlas para cada mapa del servidor.</p>
+                </div>
+            </section>
+
+            <section id="flujo-reportes" class="section">
+                <h2>Flujo de trabajo al recibir un reporte</h2>
+                <p>El proceso de atención de reportes sigue un flujo estructurado diseñado para maximizar la eficiencia.</p>
+
+                <div class="info-card">
+                    <h4>Paso 1: Recepción del popup</h4>
+                    <p>Te aparece un popup en la pantalla mostrándote la información básica del reporte. Este popup es visible incluso si estás en medio de algo, diseñado para no interrumpir completamente tu juego pero sí llamar tu atención.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Paso 2: Reclamar el reporte</h4>
+                    <p>Si decidís atender el reporte, tenés que <strong>"reclamarlo"</strong>. Esto significa que vos te hacés responsable de ese caso, y otros administradores ven que ya está siendo atendido. Esto previene que dos admins respondan al mismo reporte.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Paso 3: Crear el sit</h4>
+                    <p>La forma más común de proceder es crear un sit para hablar con las partes involucradas. El sistema automáticamente teletransportará a los jugadores relevantes a la posición de sit, y vos tendrás una interfaz especial para gestionar la sesión.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Paso 4: Investigación y resolución</h4>
+                    <p>Durante el sit, tenés herramientas completas para investigar: podés traer testigos, congelar jugadores problemáticos, revisar relaciones de amistad en Steam, y acceder a todas las funciones administrativas integradas.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Paso 5: Cerrar el caso</h4>
+                    <p>Cuando terminás de resolver el caso, cerrás el sit desde el menú. Todos los participantes reciben una notificación de que el sit ha finalizado. Si el caso estaba conectado a un reporte, el jugador recibe una ventana para calificar la atención del staff.</p>
+                </div>
+            </section>
+
+            <section id="sits" class="section">
+                <h2>Sistema de sits</h2>
+                <p>Los sits son el corazón del sistema de moderación de sReport. Cuando creás un sit, el sistema ejecuta varias acciones automáticamente.</p>
+
+                <h3>Creación automática</h3>
+                <ul>
+                    <li>Selecciona una posición de sit aleatoria de las configuradas</li>
+                    <li>Teletransporta a todos los participantes a esa ubicación</li>
+                    <li>Crea una interfaz especial visible solo para los participantes</li>
+                    <li>Muestra los nombres con iconos que indican el rol de cada uno</li>
+                </ul>
+
+                <h3>Control durante el sit</h3>
+                <div class="info-card">
+                    <h4>Añadir jugadores al sit</h4>
+                    <p>Apuntá al jugador con la physgun y presioná <span class="keybind">Reload</span>. El sistema detecta esta acción y envía una invitación al jugador, quien puede aceptarla presionando <span class="keybind">F8</span> o rechazarla presionando <span class="keybind">F7</span>.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Silenciar participantes (Gag)</h4>
+                    <p>Si un participante está siendo problemático, podés silenciarlo temporalmente desde la interfaz del sit. Esta función no afecta el chat global, solo el chat entre participantes del sit.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Check Friends <span class="badge">Steam API</span></h4>
+                    <p>El botón "Check Friends" consulta la API de Steam y te muestra si dos jugadores son amigos en Steam. Extremadamente útil para detectar favoritismos o colaboración entre personas que dicen no conocerse.</p>
+                </div>
+            </section>
+
+            <section id="popups" class="section">
+                <h2>Sistema de popups y notificaciones</h2>
+                <p>Los popups son tu herramienta visual principal para mantenerte informado sobre eventos importantes del servidor.</p>
+
+                <h3>Cuándo aparecen popups</h3>
+                <ul>
+                    <li>Un jugador envía un nuevo reporte</li>
+                    <li>Otro admin reclama un reporte</li>
+                    <li>Se inicia un nuevo sit</li>
+                    <li>Se finaliza un sit</li>
+                </ul>
+
+                <div class="info-card">
+                    <h4>Características de los popups</h4>
+                    <ul>
+                        <li><strong>No invasivos:</strong> No bloquean elementos críticos del juego</li>
+                        <li><strong>Efectivos:</strong> Lo suficientemente llamativos para no perderte reportes</li>
+                        <li><strong>Apilables:</strong> Si hay múltiples reportes, se apilan verticalmente</li>
+                        <li><strong>Configurables:</strong> Se pueden mover a la derecha si interfieren con otros elementos del HUD</li>
+                    </ul>
+                </div>
+
+                <h3>Navegación sin cursor</h3>
+                <p>La configuración actual permite que veas la barra de desplazamiento y el resumen de reportes <strong>sin tener el cursor activo</strong>. Podés navegar rápidamente entre reportes usando las teclas de navegación mientras estás en medio de una partida.</p>
+            </section>
+
+            <section id="menu-admin" class="section">
+                <h2>Interfaz del menú administrativo</h2>
+                <p>El menú administrativo es tu panel de control completo para toda la gestión de moderación.</p>
+
+                <h3>Pestañas principales</h3>
+                
+                <div class="info-card">
+                    <h4>📋 Reportes activos</h4>
+                    <p>Muestra todos los casos esperando atención en este momento:</p>
+                    <ul>
+                        <li>Quién reportó y quién es el reportado</li>
+                        <li>Tiempo de espera del reporte</li>
+                        <li>Estado (sin reclamar / reclamado por...)</li>
+                        <li>Comentario del reportante</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h4>👥 Sits activos</h4>
+                    <p>Muestra las sesiones administrativas en curso:</p>
+                    <ul>
+                        <li>Administrador a cargo del sit</li>
+                        <li>Lista de participantes</li>
+                        <li>Duración de la sesión</li>
+                        <li>Reporte conectado (si aplica)</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h4>📊 Información y estadísticas</h4>
+                    <p>Datos históricos completos del servidor:</p>
+                    <ul>
+                        <li>Total de reportes creados y finalizados</li>
+                        <li>Total de sits realizados</li>
+                        <li>Desempeño individual de cada staff</li>
+                        <li>Identificación de problemas recurrentes</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h4>🏆 Rendimiento</h4>
+                    <p>Tablero de liderazgo que muestra el ranking de administradores basado en:</p>
+                    <ul>
+                        <li>Puntos por actividad (sits creados y reportes resueltos)</li>
+                        <li>Calificaciones recibidas</li>
+                        <li>Eficiencia en resolución de casos</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="gestion-sits" class="section">
+                <h2>Gestión de sits en profundidad</h2>
+                <p>Los sits son sesiones administrativas donde tenés control total para investigar y resolver casos.</p>
+
+                <h3>Herramientas disponibles durante un sit</h3>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Función</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Ban</strong></td>
+                            <td>Suspender al jugador con tiempo y razón especificados</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kick</strong></td>
+                            <td>Expulsar al jugador del servidor</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Bring</strong></td>
+                            <td>Traer al jugador hacia tu posición</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Goto</strong></td>
+                            <td>Ir hacia la posición del jugador</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Freeze</strong></td>
+                            <td>Congelar al jugador en su lugar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unfreeze</strong></td>
+                            <td>Descongelar al jugador</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gag</strong></td>
+                            <td>Silenciar al jugador durante el sit</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Check Friends</strong></td>
+                            <td>Verificar relación de amistad en Steam</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-card warning">
+                    <h4>Importante: Integración con admin mods</h4>
+                    <p>Todas estas funciones usan los comandos nativos de tu sistema de administración (ULX, SAM, etc.). Esto garantiza compatibilidad total con logs administrativos, sistemas de puntos, y cualquier otra integración existente.</p>
+                </div>
+            </section>
+
+            <section id="teletransportacion" class="section">
+                <h2>Sistema de teletransportación y posiciones</h2>
+                <p>La gestión de posiciones de sit es fundamental para el buen funcionamiento del sistema.</p>
+
+                <h3>Configuración de posiciones</h3>
+                
+                <div class="command-block">
+                    <code>sreport_setsitpos</code>
+                </div>
+                <p>Guarda tu posición actual como la ubicación principal de sit. Las coordenadas se guardan específicamente para el mapa en el que estás, por lo que no necesitás reconfigurarlas cuando cambia el mapa.</p>
+
+                <div class="command-block">
+                    <code>sreport_addsitpos</code>
+                </div>
+                <p>Agrega posiciones adicionales. El sistema seleccionará aleatoriamente entre todas las posiciones configuradas al crear un sit.</p>
+
+                <h3>Posiciones globales vs personales</h3>
+                
+                <div class="info-card">
+                    <h4>Posiciones globales <span class="badge">sReport_ManageSitPos</span></h4>
+                    <p>Si tenés este permiso, podés configurar posiciones de sit que todos los administradores usarán por defecto.</p>
+                </div>
+
+                <div class="info-card">
+                    <h4>Posiciones personales <span class="badge">sReport_ManageOwnSitPos</span></h4>
+                    <p>Permite que cada administrador tenga sus propias posiciones personalizadas. Útil si preferís trabajar en diferentes áreas del mapa.</p>
+                </div>
+
+                <h3>Sistema inteligente de posicionamiento</h3>
+                <p>Si la posición configurada está bloqueada, el sistema busca automáticamente un espacio libre en un radio de 80 unidades, rotando 360 grados en incrementos de 3 grados hasta encontrar una ubicación válida.</p>
+            </section>
+
+            <section id="integracion" class="section">
+                <h2>Integración con sistemas de administración</h2>
+                <p>sReport está diseñado para trabajar perfectamente con los principales sistemas de administración de Garry's Mod.</p>
+
+                <div class="info-card">
+                    <h4>Sistemas compatibles</h4>
+                    <ul>
+                        <li><strong>ULX</strong> - Ultra Light eXtensions</li>
+                        <li><strong>SAM</strong> - Simple Admin Mod</li>
+                        <li><strong>xAdmin</strong> (versión 1 y 2)</li>
+                        <li><strong>sAdmin</strong> - Simple Admin</li>
+                        <li><strong>ServerGuard</strong></li>
+                    </ul>
+                </div>
+
+                <h3>Detección automática</h3>
+                <p>El addon detecta automáticamente qué sistema tenés instalado y adapta sus comandos para usar el correcto. Cuando usás las funciones de ban, kick, freeze, etc. desde sReport, el addon ejecuta los comandos nativos de tu sistema de administración.</p>
+
+                <div class="info-card success">
+                    <h4>Ventajas de la integración</h4>
+                    <ul>
+                        <li>Compatibilidad total con logs administrativos existentes</li>
+                        <li>Funciona con sistemas de puntos de staff</li>
+                        <li>Mantiene consistencia con otras herramientas administrativas</li>
+                        <li>No requiere configuración adicional</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="permisos" class="section">
+                <h2>Sistema de permisos</h2>
+                <p>El sistema de permisos de sReport es granular y flexible, permitiendo control preciso sobre qué puede hacer cada rango.</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Permiso</th>
+                            <th>Función</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>sReport_Popup</code></td>
+                            <td>Recibir notificaciones popup cuando se crea un reporte</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_AdminMenu</code></td>
+                            <td>Acceder al menú administrativo con estadísticas completas</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_ActiveMenu</code></td>
+                            <td>Ver el menú de reportes y sits activos</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_Sit</code></td>
+                            <td>Gestionar sits (crear, invitar, usar herramientas)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_CreateReport</code></td>
+                            <td>Crear reportes (por defecto: todos los jugadores)</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_ManageSitPos</code></td>
+                            <td>Gestionar posiciones de sit globales</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_ManageOwnSitPos</code></td>
+                            <td>Gestionar solo tus posiciones personales</td>
+                        </tr>
+                        <tr>
+                            <td><code>sReport_ForceJoinSit</code></td>
+                            <td>Unirse forzosamente a cualquier sit activo</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="info-card warning">
+                    <h4>Configuración de permisos</h4>
+                    <p>Por defecto, solo <strong>superadmin</strong> y <strong>owner</strong> tienen todos los permisos. Los permisos se pueden configurar en el archivo <code>sh_sreport_config.lua</code> en la sección de permisos.</p>
+                </div>
+            </section>
+
+            <section id="hotkeys" class="section">
+                <h2>Teclas de acceso rápido (hotkeys)</h2>
+                <p>sReport incluye un sistema de teclas rápidas que acelera significativamente el flujo de trabajo administrativo.</p>
+
+                <h3>Invitaciones a sits</h3>
+                <div class="info-card">
+                    <p>Cuando recibís una invitación para unirte a un sit:</p>
+                    <ul>
+                        <li>Presioná <span class="keybind">F8</span> para aceptar la invitación</li>
+                        <li>Presioná <span class="keybind">F7</span> para rechazar la invitación</li>
+                    </ul>
+                    <p><small>Estas teclas se pueden cambiar en la configuración si entran en conflicto con otros binds.</small></p>
+                </div>
+
+                <h3>Añadir jugadores con physgun</h3>
+                <div class="info-card">
+                    <p>Para añadir un jugador a un sit activo:</p>
+                    <ol>
+                        <li>Apuntá al jugador con la <strong>physgun</strong></li>
+                        <li>Presioná <span class="keybind">Reload</span></li>
+                        <li>El jugador recibirá una invitación automáticamente</li>
+                    </ol>
+                    <p>Esta acción instantánea hace que expandir un sit con testigos sea mucho más fluido que usar menús.</p>
+                </div>
+
+                <h3>Navegación en menús</h3>
+                <p>Podés usar las <span class="keybind">flechas del teclado</span> para navegar entre reportes en la lista sin necesidad de usar el mouse, especialmente útil cuando tenés el cursor desactivado.</p>
+            </section>
+
+            <section id="cooldowns" class="section">
+                <h2>Sistema de enfriamiento (cooldown)</h2>
+                <p>El sistema de enfriamiento previene abusos y spam de reportes y sits.</p>
+
+                <h3>Cooldowns para jugadores</h3>
+                <div class="info-card">
+                    <ul>
+                        <li><strong>Entre reportes:</strong> 120 segundos (2 minutos)</li>
+                        <li><strong>Reportes activos:</strong> Máximo 1 reporte activo a la vez</li>
+                    </ul>
+                </div>
+
+                <h3>Cooldowns para staff</h3>
+                <div class="info-card">
+                    <h4>Prevención de farming de puntos</h4>
+                    <ul>
+                        <li><strong>Crear sit (comando chat):</strong> 3 segundos entre sits</li>
+                        <li><strong>Crear sit (physgun reload):</strong> 3 segundos entre sits</li>
+                        <li><strong>Puntos en tablero:</strong> 5 segundos - sits creados muy rápido no suman puntos</li>
+                    </ul>
+                    <p>Esto evita que alguien cree sits falsos solo para subir en el ranking.</p>
+                </div>
+
+                <h3>Sistema de calificación</h3>
+                <p>Después de cerrar un reporte, el jugador puede calificar la atención del staff (thumbs up/down). Este feedback solo se puede dar <strong>una vez por reporte</strong> y tiene un pequeño cooldown para prevenir spam.</p>
+            </section>
+
+            <section id="afk" class="section">
+                <h2>Sistema AFK y cierre automático</h2>
+                <p>sReport detecta cuando un administrador se queda AFK durante un sit y toma acciones apropiadas.</p>
+
+                <div class="info-card warning">
+                    <h4>Detección de inactividad</h4>
+                    <p>Si el administrador a cargo de un sit no mueve el mouse ni presiona ninguna tecla durante <strong>180 segundos (3 minutos)</strong>, el sistema lo marca como AFK.</p>
+                </div>
+
+                <h3>Consecuencias del AFK</h3>
+                <ul>
+                    <li>El administrador es marcado visualmente como AFK en la interfaz del sit</li>
+                    <li>Comienza un temporizador que eventualmente cerrará el sit automáticamente</li>
+                    <li>Los otros participantes del sit ven el estado AFK</li>
+                    <li>Cuando el admin vuelve a mostrar actividad, el temporizador se cancela</li>
+                </ul>
+
+                <div class="info-card">
+                    <h4>Marcado manual de AFK</h4>
+                    <p>Podés marcar manualmente que estás AFK durante un sit usando una opción en la interfaz. Útil si necesitás hacer algo rápido pero planeas volver.</p>
+                </div>
+
+                <h3>Prevención de jugadores atrapados</h3>
+                <p>Esta función existe para prevenir que los jugadores queden "atrapados" en un sit indefinidamente porque el administrador se fue sin darse cuenta o perdió la conexión.</p>
+            </section>
+
+            <section id="estadisticas" class="section">
+                <h2>Estadísticas y sistema de rendimiento</h2>
+                <p>El sistema de estadísticas proporciona insights valiosos sobre el funcionamiento del equipo de staff.</p>
+
+                <h3>Métricas individuales</h3>
+                <div class="info-card">
+                    <p>Para cada administrador, el sistema rastrea:</p>
+                    <ul>
+                        <li><strong>Reportes reclamados:</strong> Cuántos casos ha tomado</li>
+                        <li><strong>Sits creados:</strong> Sesiones administrativas iniciadas</li>
+                        <li><strong>Puntos acumulados:</strong> Score basado en actividad</li>
+                        <li><strong>Rating promedio:</strong> Calificaciones recibidas de jugadores</li>
+                    </ul>
+                </div>
+
+                <h3>Sistema de puntos</h3>
+                <p>Los puntos se otorgan por:</p>
+                <ul>
+                    <li>Crear sits (respetando cooldowns)</li>
+                    <li>Resolver reportes</li>
+                    <li>Recibir calificaciones positivas</li>
+                </ul>
+
+                <div class="info-card success">
+                    <h4>Tablero de liderazgo <span class="badge">🏆</span></h4>
+                    <p>Muestra el ranking de todos los administradores ordenados por puntos. Esto crea una competencia amigable que generalmente resulta en mejor servicio para los jugadores.</p>
+                    <p><strong>Importante:</strong> Los puntos no son la única métrica - las calificaciones muestran la <em>calidad</em> del servicio, no solo la cantidad.</p>
+                </div>
+
+                <h3>Estadísticas globales del servidor</h3>
+                <ul>
+                    <li>Total de reportes creados desde la instalación</li>
+                    <li>Total de sits realizados</li>
+                    <li>Reportes cerrados exitosamente</li>
+                    <li>Sits completados</li>
+                    <li>Ratio de calificaciones positivas vs negativas</li>
+                </ul>
+            </section>
+
+            <section id="situaciones" class="section">
+                <h2>Manejo de situaciones especiales</h2>
+                <p>Hay varias situaciones especiales que pueden ocurrir durante el uso de sReport.</p>
+
+                <h3>Jugador se desconecta con reporte activo</h3>
+                <div class="info-card">
+                    <p>El sistema automáticamente cierra ese reporte y notifica al administrador que lo había reclamado. Esto previene que reportes de jugadores ausentes ocupen espacio en la lista.</p>
+                </div>
+
+                <h3>Jugador se desconecta durante un sit</h3>
+                <div class="info-card">
+                    <p>El sit continúa pero ese jugador ya no está presente. El administrador decide si cerrar el sit completo o continuar con los participantes restantes. El sistema no cierra automáticamente el sit.</p>
+                </div>
+
+                <h3>No hay posiciones de sit configuradas</h3>
+                <div class="info-card warning">
+                    <p>El sistema te envía un mensaje de advertencia pero igual crea el sit. Los jugadores no son teletransportados. Usá bring/goto para reunir a todos manualmente.</p>
+                    <p><strong>Recomendación:</strong> Configurá posiciones de sit para todos los mapas del servidor.</p>
+                </div>
+
+                <h3>Jugador ya está en otro sit</h3>
+                <div class="info-card">
+                    <p>El sistema te notifica que ese jugador ya está ocupado. Esto previene que un jugador sea jalado de un sit a otro sin querer.</p>
+                </div>
+            </section>
+
+            <section id="tips" class="section">
+                <h2>Tips y mejores prácticas</h2>
+                <p>Consejos basados en experiencia real para hacer tu trabajo como administrador más efectivo.</p>
+
+                <div class="info-card success">
+                    <h4>✓ Siempre reclamá reportes antes de actuar</h4>
+                    <p>Previene confusión con otros admins. Si otro admin ya reclamó un reporte, dejáselo a menos que pida ayuda específicamente.</p>
+                </div>
+
+                <div class="info-card success">
+                    <h4>✓ Sé eficiente pero justo</h4>
+                    <p>Resolvé problemas rápidamente sin apurar a las personas. Escuchá ambos lados, pedí pruebas, y tomá decisiones basadas en evidencia y reglas del servidor.</p>
+                </div>
+
+                <div class="info-card success">
+                    <h4>✓ Usá el feedback constructivamente</h4>
+                    <p>Las calificaciones negativas son señales para mejorar, no ataques personales. Ajustá tu enfoque si recibís varias calificaciones malas.</p>
+                </div>
+
+                <div class="info-card success">
+                    <h4>✓ Configurá posiciones neutrales</h4>
+                    <p>Poné posiciones de sit en áreas tranquilas, lejos de zonas PvP. Idealmente en rooftops alejados o habitaciones privadas.</p>
+                </div>
+
+                <div class="info-card success">
+                    <h4>✓ Priorizá reportes urgentes</h4>
+                    <p>Si hay muchos reportes y poco staff, atendé primero los más serios (RDM masivo > FailRP menor). Pero no dejes reportes sin atender por mucho tiempo.</p>
+                </div>
+
+                <div class="info-card success">
+                    <h4>✓ Aprendé los hotkeys</h4>
+                    <p>Cuanto más familiarizado estés con F7/F8, physgun reload, y comandos de chat, más eficientemente trabajarás. La velocidad es importante en moderación.</p>
+                </div>
+
+                <h3>Casos complejos</h3>
+                <p>Si un caso es particularmente complejo, no tengas miedo de:</p>
+                <ul>
+                    <li>Pedir la opinión de un administrador senior</li>
+                    <li>Tomarte unos minutos extra para investigar</li>
+                    <li>Consultar las reglas del servidor antes de decidir</li>
+                    <li>Explicar claramente tu decisión a los jugadores involucrados</li>
+                </ul>
+            </section>
+
+            <section id="problemas" class="section">
+                <h2>Solución de problemas comunes</h2>
+                <p>Soluciones a los problemas más frecuentes que podrías encontrar.</p>
+
+                <div class="info-card warning">
+                    <h4>❌ Los popups no aparecen</h4>
+                    <p><strong>Solución:</strong></p>
+                    <ul>
+                        <li>Verificá que tengas el permiso <code>sReport_Popup</code></li>
+                        <li>Confirmá con un admin senior o revisá la configuración de permisos</li>
+                        <li>Asegurate de no haber desactivado notificaciones con comandos de consola</li>
+                    </ul>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>❌ Jugadores no se teletransportan en sits</h4>
+                    <p><strong>Solución:</strong></p>
+                    <ul>
+                        <li>Probablemente no hay posiciones de sit configuradas para ese mapa</li>
+                        <li>Usá <code>!sreport_setsitpos</code> después de pararte en una ubicación apropiada</li>
+                        <li>Recordá que las posiciones son específicas por mapa</li>
+                    </ul>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>❌ Problemas con invitaciones a sits</h4>
+                    <p><strong>Solución:</strong></p>
+                    <ul>
+                        <li>Verificá que F7/F8 no estén siendo usadas por otro addon</li>
+                        <li>Si hay conflicto, pedí al owner cambiar las teclas en la configuración</li>
+                    </ul>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>❌ Menú administrativo no se abre</h4>
+                    <p><strong>Solución:</strong></p>
+                    <ul>
+                        <li>Verificá que tengas el permiso <code>sReport_AdminMenu</code></li>
+                        <li>Este permiso es separado del permiso de popups y sits</li>
+                    </ul>
+                </div>
+
+                <div class="info-card warning">
+                    <h4>❌ Sits no suman puntos</h4>
+                    <p><strong>Solución:</strong></p>
+                    <ul>
+                        <li>Probablemente estás creando sits demasiado rápido</li>
+                        <li>El cooldown de 5 segundos entre sits que suman puntos es intencional</li>
+                        <li>Creá sits solo cuando sean realmente necesarios</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="info-card" style="margin-top: 4rem; background: var(--bg-tertiary);">
+                <h4>🎮 ¡Éxito en tus tareas administrativas!</h4>
+                <p>Recordá que aunque sReport proporciona todas las herramientas técnicas que necesitás, la moderación efectiva también requiere buen juicio, paciencia, y comunicación clara. El addon facilita el trabajo, pero vos seguís siendo la parte más importante del proceso.</p>
+                <p style="margin-bottom: 0;">El staff de <strong>PeladosRP</strong> es un equipo. Usá el sistema, comunicáte con tus compañeros administradores, y siempre buscá mejorar la experiencia de los jugadores en el servidor.</p>
+            </div>
+        </main>
+    </div>
+
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    
+                    // Update active link
+                    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    if (window.innerWidth <= 968) {
+                        document.getElementById('sidebar').classList.remove('active');
+                    }
+                }
+            });
+        });
+
+        // Scroll to top button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Mobile menu toggle
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 968) {
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // Highlight active section on scroll
+        const sections = document.querySelectorAll('.section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Copy code blocks on click
+        document.querySelectorAll('.command-block code').forEach(block => {
+            block.style.cursor = 'pointer';
+            block.title = 'Click para copiar';
+            
+            block.addEventListener('click', () => {
+                const text = block.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = block.textContent;
+                    block.textContent = '✓ Copiado!';
+                    setTimeout(() => {
+                        block.textContent = originalText;
+                    }, 1500);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
